@@ -57,7 +57,7 @@ main { flex: 1; }
   margin: 0;
 }
 
-.page-head { padding-top: clamp(64px, 12vw, 160px); padding-bottom: clamp(40px, 6vw, 72px); border-bottom: 1px solid var(--line); }
+.page-head { padding-top: clamp(64px, 12vw, 160px); padding-bottom: clamp(40px, 6vw, 72px); }
 .page-head h1 { font-size: clamp(56px, 10vw, 128px); }
 .page-head p { max-width: 560px; color: var(--ink-dim); margin: 24px 0 0; font-size: 19px; }
 

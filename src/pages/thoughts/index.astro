@@ -32,10 +32,10 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
 
 <style>
   .list { padding-bottom: 96px; }
-  ol { list-style: none; margin: 0; padding: 0; }
+  ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
   li { border-bottom: 1px solid var(--line); }
-  li a { display: grid; grid-template-columns: 140px 1fr; gap: 4px 32px; padding: 32px 0; text-decoration: none; }
-  time { color: var(--ink-dim); padding-top: 10px; }
+  li a { display: grid; grid-template-columns: 140px 1fr; align-items: baseline; gap: 8px 32px; padding: 28px 0; text-decoration: none; }
+  time { color: var(--ink-dim); }
   .title { font-family: var(--serif); font-size: clamp(32px, 4vw, 52px); line-height: 1.05; transition: color .2s; }
   .desc { grid-column: 2; color: var(--ink-dim); }
   li a:hover .title { color: var(--accent); }

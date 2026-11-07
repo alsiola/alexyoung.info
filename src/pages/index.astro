@@ -88,10 +88,10 @@ const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
   .more:hover { color: var(--accent); }
   .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
   .rows li { border-bottom: 1px solid var(--line); }
-  .rows a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); align-items: baseline; gap: 8px 32px; padding: 24px 0; text-decoration: none; }
+  .rows a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); align-items: center; gap: 8px 32px; padding: 24px 0; text-decoration: none; }
   .rows a:hover .name { color: var(--accent); }
-  .name { font-family: var(--serif); font-size: clamp(32px, 4vw, 48px); line-height: 1.05; transition: color .2s; }
-  .tag { color: var(--ink-dim); }
+  .name { font-family: var(--serif); font-size: clamp(32px, 4vw, 48px); line-height: 1; padding-bottom: .08em; transition: color .2s; }
+  .tag { color: var(--ink-dim); text-wrap: pretty; }
   @media (max-width: 760px) { .rows a { grid-template-columns: 1fr; } }
   .empty { color: var(--ink-dim); border-top: 1px solid var(--line); padding-top: 24px; margin: 0; }
   .contact { padding-bottom: clamp(64px, 10vw, 128px); }

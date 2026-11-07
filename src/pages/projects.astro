@@ -33,6 +33,7 @@ import { projects } from '../data/projects';
 
 <style>
   .project { display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: clamp(48px, 8vw, 96px) 0; border-bottom: 1px solid var(--line); scroll-margin-top: 80px; }
+  .project:first-child { border-top: 1px solid var(--line); }
   .meta { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
   .pill { border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px; color: var(--ink-dim); font-size: 11px; }
   h2 { font-size: clamp(48px, 7vw, 96px); }
