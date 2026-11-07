@@ -92,12 +92,14 @@
         const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl;
         let tx = -ny, ty = nx;
         if (tx * vx + ty * vy < 0) { tx = -tx; ty = -ty; }
-        const k = Math.min(1, v * 2.2);
-        vx = vx * (1 - k) + (tx + nx * v * 1.2) * k;
-        vy = vy * (1 - k) + (ty + ny * v * 1.2) * k;
+        // outside the edge (v < 0.5) just bend along it; only push out once a line is over the photo
+        const k = Math.min(1, v * 1.6);
+        const push = Math.max(0, v - 0.5) * 2;
+        vx = vx * (1 - k) + (tx + nx * push) * k;
+        vy = vy * (1 - k) + (ty + ny * push) * k;
         const vl = Math.hypot(vx, vy) || 1; vx /= vl; vy /= vl;
         speed += k * 1.2; // water speeds up round a rock
-        rim = Math.max(0, 1 - Math.abs(v - 0.35) / 0.3); // brightest just outside the edge
+        rim = Math.max(0, 1 - Math.abs(v - 0.45) / 0.3); // brightest just outside the edge
       }
       const nx2 = p.x + vx * speed, ny2 = p.y + vy * speed;
       if (rim > 0.05) {
@@ -109,7 +111,7 @@
       }
       ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx2, ny2); ctx.stroke();
       p.x = nx2; p.y = ny2;
-      if (--p.life < 0 || nx2 < 0 || nx2 > w || ny2 < 0 || ny2 > h || v > 0.85) spawn(p);
+      if (--p.life < 0 || nx2 < 0 || nx2 > w || ny2 < 0 || ny2 > h || v > 0.9) spawn(p);
     }
     if (running) raf = requestAnimationFrame(frame);
   }
