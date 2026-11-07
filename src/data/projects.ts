@@ -29,6 +29,21 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'fuguestate',
+    name: 'FugueState',
+    tagline: 'Agent memory that dreams.',
+    summary:
+      'A memory sidecar for Claude Code. It watches every prompt and tool call, forms beliefs about how you work, lies awake at night worrying about contradictions, then dreams up resolutions. Every twelfth night it goes on a spirit quest, then sobers up to check whether the visions were insight or hallucination.',
+    points: [
+      'Hooks into Claude Code and records every interaction',
+      'Sleep cycle: scan for conflicts, REM dreams that keep, merge or retire beliefs',
+      'Morning briefing on what it dreamed and what changed, so you stay in the loop',
+    ],
+    stack: ['TypeScript', 'Claude API', 'SQLite', 'Docker'],
+    status: 'Experiment',
+    links: [{ label: 'GitHub', href: 'https://github.com/alsiola/fuguestate' }],
+  },
+  {
     slug: 'quantum-ai',
     name: 'Quantum AI',
     tagline: 'Measurement as memory.',
