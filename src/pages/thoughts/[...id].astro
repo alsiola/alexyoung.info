@@ -13,7 +13,7 @@ const date = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month:
 <Base title={post.data.title} description={post.data.description}>
   <article class="wrap">
     <header class="head">
-      <a href="/thoughts/" class="mono back">← Thoughts</a>
+      <a href="/thoughts/" class="back">All posts</a>
       <h1 class="display rise">{post.data.title}</h1>
       <p class="lede">{post.data.description}</p>
       <time class="mono" datetime={post.data.date.toISOString()}>{date}</time>
@@ -28,7 +28,7 @@ const date = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month:
   .back:hover { color: var(--accent); }
   h1 { font-size: clamp(52px, 8vw, 112px); margin: 28px 0 24px; line-height: .95; }
   .lede { font-size: 21px; color: var(--ink-dim); max-width: 640px; margin: 0 0 24px; }
-  time { color: var(--accent); }
+  time { color: var(--ink-dim); }
   .prose { max-width: 680px; padding-top: 56px; padding-bottom: 120px; font-size: 19px; line-height: 1.7; }
   .prose :global(h2) { font-family: var(--serif); font-weight: 400; font-size: 40px; line-height: 1.1; margin: 2em 0 .5em; }
   .prose :global(h3) { font-size: 20px; margin: 2em 0 .5em; }

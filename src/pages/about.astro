@@ -3,18 +3,13 @@ import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import alex from '../assets/alex.png';
 
-const timeline = [
-  { when: '2003–09', what: 'Veterinary surgeon', detail: 'BVSc at the University of Liverpool, then private practice, a university teaching hospital and private equine anaesthesia.' },
-  { when: 'At 30', what: 'Career change', detail: 'Turned a lifelong side habit of writing code into the day job.' },
-  { when: 'Now', what: 'Agent orchestration', detail: 'Pushing on what agents can do when the work, not the prompt, is the unit.' },
-];
-
 const roles = [
   { when: '2026 –', role: 'Staff Backend Engineer', org: 'Thrive Learning', detail: 'Leading the backend function across a 50-strong engineering department, and architecting the customer-facing autonomous AI agent platform.' },
-  { when: '2024 – 26', role: 'Senior Product Engineer', org: 'HiveHR', detail: 'Shipped a new product, rebuilt observability with distributed tracing, and built generative AI features end to end.' },
-  { when: '2022 – 24', role: 'Head of Engineering', org: 'Clinchd', detail: 'Most senior technical person. Brought in deterministic CI, continuous release and feature flags, split across delivery, SRE and management.' },
+  { when: '2024 – 26', role: 'Senior Product Engineer', org: 'HiveHR', detail: 'Shipped a new product, added distributed tracing, and built generative AI features.' },
+  { when: '2022 – 24', role: 'Head of Engineering', org: 'Clinchd', detail: 'Led a team of five and set technical direction for the company. Introduced continuous release and feature flags.' },
   { when: '2020 – 22', role: 'Senior Backend Engineer', org: 'Impala Travel Technology', detail: 'Led a team on feature delivery and platform scalability, and aligned backend direction across teams.' },
   { when: '2016 – 20', role: 'Lead Engineer', org: 'HiveHR', detail: 'Engineer number two. Grew a proof of concept into an event-driven microservices platform and a team of eight.' },
+  { when: 'Before', role: 'Veterinary surgeon', org: 'BVSc, University of Liverpool', detail: 'Private practice, a university teaching hospital, then freelance equine anaesthesia.' },
 ];
 
 const skills = [
@@ -29,16 +24,16 @@ const skills = [
 <Base title="About" description="Vet turned software engineer, now working on agent orchestration.">
   <section class="wrap intro">
     <div class="text">
-      <p class="eyebrow">01 — About</p>
-      <h1 class="display rise">From anaesthesia<br />to <em>agents</em></h1>
+      <h1 class="display rise">About</h1>
       <p class="lede">
-        I trained as a veterinary surgeon and spent years keeping horses asleep and alive. I'd always
-        written code on the side, and at 30 I made it the job. Twelve years on, I've built and led
-        engineering in startups, scaleups and enterprises, from engineer number two to Head of Engineering.
+        I trained as a vet and worked in private practice and at a university teaching hospital, then
+        as a freelance equine anaesthetist. I'd always written code on the side, and at 30 I switched
+        careers. I've been a software engineer for twelve years since, at startups, scaleups and
+        larger companies.
       </p>
       <p class="lede dim">
-        These days I'm most interested in agent orchestration: getting agents to finish real work
-        reliably, with the right permissions, over hours and days rather than a single prompt.
+        At the moment I'm most interested in agent orchestration. Most of my spare time goes into
+        getting agents to reliably finish longer pieces of work.
       </p>
     </div>
     <div class="photo">
@@ -47,20 +42,7 @@ const skills = [
   </section>
 
   <section class="wrap block">
-    <p class="eyebrow">Path</p>
-    <ol class="timeline">
-      {timeline.map((t) => (
-        <li>
-          <span class="mono when">{t.when}</span>
-          <span class="what">{t.what}</span>
-          <span class="detail">{t.detail}</span>
-        </li>
-      ))}
-    </ol>
-  </section>
-
-  <section class="wrap block">
-    <p class="eyebrow">Experience</p>
+    <h2>Experience</h2>
     <ol class="roles">
       {roles.map((r) => (
         <li>
@@ -73,12 +55,12 @@ const skills = [
   </section>
 
   <section class="wrap block last">
-    <p class="eyebrow">Skills</p>
+    <h2>Skills</h2>
     <div class="skills">
       {skills.map((s) => (
         <div class="group">
-          <h2 class="mono">{s.group}</h2>
-          <ul>{s.items.map((i) => <li>{i}</li>)}</ul>
+          <h3>{s.group}</h3>
+          <p>{s.items.join(', ')}</p>
         </div>
       ))}
     </div>
@@ -87,40 +69,32 @@ const skills = [
 
 <style>
   .intro { display: grid; grid-template-columns: 1fr 360px; gap: clamp(32px, 6vw, 96px); align-items: end; padding-top: clamp(56px, 10vw, 128px); padding-bottom: clamp(40px, 6vw, 72px); border-bottom: 1px solid var(--line); }
-  h1 { font-size: clamp(56px, 9vw, 136px); margin: 24px 0 32px; }
+  h1 { font-size: clamp(56px, 9vw, 128px); margin: 0 0 32px; }
   .lede { font-size: 20px; max-width: 620px; margin: 0 0 20px; }
   .lede.dim { color: var(--ink-dim); }
   .photo { position: relative; }
   .photo :global(img) { width: 100%; height: auto; display: block; -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 25%); mask-image: linear-gradient(to top, transparent 0%, #000 25%); }
-  .photo::before { content: ''; position: absolute; inset: 15% 5% 0; background: radial-gradient(closest-side, rgba(255,90,31,.22), transparent); z-index: -1; }
 
-  .block { padding-top: clamp(56px, 8vw, 104px); }
+  .block { padding-top: clamp(48px, 7vw, 88px); }
   .block.last { padding-bottom: clamp(72px, 10vw, 128px); }
-  .timeline { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--line); }
-  .timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1.4fr); gap: 8px 32px; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--line); }
-  .roles { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--line); }
-  .roles li { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1.4fr); gap: 8px 32px; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--line); }
-  .role { display: flex; flex-direction: column; gap: 6px; }
-  .roles .what { font-size: clamp(26px, 2.8vw, 34px); }
-  .org { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-dim); }
-  .when { color: var(--accent); }
-  .what { font-family: var(--serif); font-size: clamp(30px, 3.5vw, 44px); line-height: 1.05; }
+  .block h2 { font-size: 15px; font-weight: 500; margin: 0 0 16px; }
+  .roles { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .roles li { display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1.4fr); gap: 8px 32px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .when { color: var(--ink-dim); font-size: 13px; }
+  .role { display: flex; flex-direction: column; gap: 4px; }
+  .what { font-family: var(--serif); font-size: clamp(24px, 2.6vw, 32px); line-height: 1.1; }
+  .org { color: var(--ink-dim); font-size: 15px; }
   .detail { color: var(--ink-dim); }
-
-  .skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 24px; }
-  .group { background: var(--bg); padding: 28px; }
-  .group h2 { font-size: 12px; font-weight: 400; color: var(--accent); margin: 0 0 16px; }
-  .group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-  .group li { font-size: 15px; border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; transition: border-color .2s, color .2s; }
-  .group li:hover { border-color: var(--accent); color: var(--accent); }
-
+  .skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 40px; border-top: 1px solid var(--line); padding-top: 24px; }
+  .group h3 { font-size: 15px; font-weight: 500; margin: 0 0 6px; }
+  .group p { margin: 0; color: var(--ink-dim); }
   @media (max-width: 860px) {
     .intro { grid-template-columns: 1fr; }
     .photo { max-width: 300px; order: -1; }
     .skills { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 640px) {
-    .timeline li, .roles li { grid-template-columns: 1fr; }
+    .roles li { grid-template-columns: 1fr; }
     .skills { grid-template-columns: 1fr; }
   }
 </style>

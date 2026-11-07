@@ -6,8 +6,8 @@ export async function GET(context: APIContext) {
   const posts = (await getCollection('thoughts', ({ data }) => !data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
   return rss({
-    title: 'Alex Young — Thoughts',
-    description: 'Notes on agents, software and whatever else.',
+    title: 'Alex Young: Thoughts',
+    description: 'Occasional writing by Alex Young.',
     site: context.site!,
     items: posts.map((p) => ({
       title: p.data.title,

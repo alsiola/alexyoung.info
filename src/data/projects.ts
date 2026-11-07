@@ -13,13 +13,13 @@ export const projects: Project[] = [
   {
     slug: 'open-conduit',
     name: 'Open Conduit',
-    tagline: 'Your coding agents finish the job.',
+    tagline: 'Keeps coding agents working on issues and pull requests until they are actually done.',
     summary:
-      'A local daemon that turns issues, pull requests, threads and alerts into durable Work. Runs survive waits, restarts and red CI. Claude Code, a script or a person can pick it up, with permissions enforced at the host instead of in the prompt.',
+      'A daemon that runs on your machine and tracks issues, pull requests, Slack threads and alerts as work to be finished. If a run fails, CI goes red or a reviewer replies, it picks the work back up. The agent only gets the permissions you give it, and those are checked outside the model.',
     points: [
-      'Builds itself: 158 of 168 PRs merged on 2 Nov 2026 came from its own agents',
-      'Durable Work, Events, Executions, Timers and Waits as the core',
-      'GitHub, Linear, Jira, Slack and schedules all feed one history',
+      'Mostly builds itself: on 2 Nov 2026, 158 of the 168 merged PRs came from its own agents',
+      'Work can wait hours or days for a merge, a CI result or a reply, and survives restarts',
+      'Works with GitHub, Linear, Jira, Slack and scheduled jobs',
     ],
     stack: ['Go', 'Claude Code', 'Codex CLI', 'TUI + Web'],
     status: 'Active',
@@ -31,14 +31,14 @@ export const projects: Project[] = [
   {
     slug: 'percy-main',
     name: 'Percy Main',
-    tagline: 'A cricket club, run like a product.',
+    tagline: 'Website, members area and match-day app for my cricket club.',
     summary:
-      'The whole digital side of Percy Main Community Sports Club: public site, members area, payments and an offline match-day app for captains. Underneath sits a real AWS platform, plus Scout, an AI analyst that researches opposition from Play Cricket and ball-by-ball data and writes scouting reports.',
+      'Everything online for Percy Main Community Sports Club: the public site, members area and payments, and an app captains use on match days. It runs on AWS. It also has Scout, which looks up the opposition in Play Cricket and ball-by-ball data and writes a scouting report.',
     points: [
-      'Match-day PWA: team sheets, availability and payments, with background sync for when the pavilion signal drops',
-      'Scout: an agent with RAG fact memory that produces cited PDF scouting reports',
-      'AI content assistant that writes match reports straight into the editor',
-      '60+ ADRs, Terraform-managed AWS, 500+ commits since March 2026',
+      'Match-day app for team sheets, availability and payments that still works when the signal at the ground drops',
+      'Scout remembers things captains tell it and cites its sources in the PDF reports',
+      'An assistant that drafts match reports from the scorecard',
+      'Over 500 commits since March 2026, infrastructure in Terraform',
     ],
     stack: ['TypeScript', 'Fastify', 'React', 'PostgreSQL', 'AWS + Terraform', 'Stripe'],
     status: 'Live',
@@ -50,13 +50,13 @@ export const projects: Project[] = [
   {
     slug: 'fuguestate',
     name: 'FugueState',
-    tagline: 'Agent memory that dreams.',
+    tagline: 'A memory sidecar for Claude Code that tidies up what it has learned overnight.',
     summary:
-      'A memory sidecar for Claude Code. It watches every prompt and tool call, forms beliefs about how you work, lies awake at night worrying about contradictions, then dreams up resolutions. Every twelfth night it goes on a spirit quest, then sobers up to check whether the visions were insight or hallucination.',
+      'It records what Claude Code does and what you tell it, and builds up beliefs about how you like to work. On a timer it goes to sleep: it looks for beliefs that contradict each other and has a model resolve them, writing up a dream journal as it goes. Every twelfth cycle it goes on a spirit quest and rewrites everything, then checks whether the rewrites were any good.',
     points: [
-      'Hooks into Claude Code and records every interaction',
-      'Sleep cycle: scan for conflicts, REM dreams that keep, merge or retire beliefs',
-      'Morning briefing on what it dreamed and what changed, so you stay in the loop',
+      'Runs alongside Claude Code via hooks',
+      'Beliefs get kept, merged or retired when they conflict',
+      'Each new session starts with a summary of what changed overnight',
     ],
     stack: ['TypeScript', 'Claude API', 'SQLite', 'Docker'],
     status: 'Experiment',
@@ -65,13 +65,13 @@ export const projects: Project[] = [
   {
     slug: 'quantum-ai',
     name: 'Quantum AI',
-    tagline: 'Measurement as memory.',
+    tagline: 'Research into using quantum measurement as the memory of a sequence model.',
     summary:
-      'Can quantum measurement backaction be the memory update of an autoregressive sequence model? Emitting a symbol and updating a persistent quantum memory become one operation: a trainable instrument measures an ancilla, the outcome is the token, and the memory keeps the collapsed state.',
+      'Can measuring a quantum system be how a sequence model updates its memory? Here, producing the next token and updating the memory are the same step: the model measures a helper qubit, the result is the token, and the memory keeps whatever state the measurement left it in.',
     points: [
-      'qmem: a small differentiable density-matrix simulator',
-      '2–4 memory qubits, 1–2 output ancillas, complex128 PyTorch',
-      'Simulation-first research campaign, worked by Open Conduit agents',
+      'Includes qmem, a small differentiable simulator',
+      'Two to four memory qubits, built on PyTorch',
+      'Simulation only for now, and mostly worked on by Open Conduit agents',
     ],
     stack: ['Python', 'PyTorch', 'uv'],
     status: 'Research',

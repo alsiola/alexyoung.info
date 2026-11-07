@@ -4,29 +4,27 @@ import Base from '../layouts/Base.astro';
 <Base title="Contact" description="Get in touch with Alex Young.">
   <section class="wrap grid">
     <header>
-      <p class="eyebrow">04 — Contact</p>
-      <h1 class="display rise">Say<br /><em>hello</em></h1>
-      <p class="intro">Working on something with agents, want to talk about a project, or just want to argue about quantum memory? Drop a note.</p>
-      <p class="mono alt">Or find me on <a href="https://github.com/alsiola">GitHub ↗</a></p>
+      <h1 class="display rise">Contact</h1>
+      <p class="intro">Send me a message and it'll go straight to my inbox. I'm also on <a href="https://github.com/alsiola">GitHub</a>.</p>
     </header>
 
     <form id="contact" action="/api/contact" method="post" novalidate>
       <label>
-        <span class="mono">Name</span>
+        <span>Name</span>
         <input name="name" autocomplete="name" required maxlength="200" />
       </label>
       <label>
-        <span class="mono">Email</span>
+        <span>Email</span>
         <input name="email" type="email" autocomplete="email" required maxlength="320" />
       </label>
       <label>
-        <span class="mono">Message</span>
+        <span>Message</span>
         <textarea name="message" rows="5" required maxlength="10000"></textarea>
       </label>
       <label class="hp" aria-hidden="true">Company <input name="company" tabindex="-1" autocomplete="off" /></label>
       <div class="actions">
-        <button type="submit"><span class="label">Send it</span> <span aria-hidden="true">→</span></button>
-        <p class="status mono" role="status" aria-live="polite"></p>
+        <button type="submit"><span class="label">Send</span></button>
+        <p class="status" role="status" aria-live="polite"></p>
       </div>
     </form>
   </section>
@@ -34,13 +32,13 @@ import Base from '../layouts/Base.astro';
 
 <style>
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 8vw, 120px); padding: clamp(56px, 10vw, 128px) var(--gutter) 120px; align-items: start; }
-  h1 { font-size: clamp(88px, 13vw, 200px); margin: 24px 0 32px; }
+  h1 { font-size: clamp(56px, 9vw, 128px); margin: 0 0 24px; }
   .intro { font-size: 19px; max-width: 440px; margin: 0 0 24px; }
-  .alt { color: var(--ink-dim); }
-  .alt a { color: var(--accent); text-decoration: none; }
+  .intro a { text-underline-offset: 4px; }
+  .intro a:hover { color: var(--accent); }
   form { display: flex; flex-direction: column; gap: 28px; padding-top: 12px; }
   label { display: flex; flex-direction: column; gap: 10px; }
-  label .mono { color: var(--ink-dim); }
+  label span { color: var(--ink-dim); font-size: 15px; }
   input, textarea {
     font: inherit; font-size: 20px; color: var(--ink); background: transparent;
     border: 0; border-bottom: 1px solid var(--line); padding: 8px 0 12px; border-radius: 0;
@@ -50,10 +48,10 @@ import Base from '../layouts/Base.astro';
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
   button {
-    font-family: var(--serif); font-size: 36px; line-height: 1; color: var(--bg); background: var(--accent);
-    border: 0; padding: 18px 32px 20px; cursor: pointer; display: inline-flex; gap: 14px; transition: transform .2s, background .2s;
+    font: inherit; font-weight: 500; color: var(--bg); background: var(--accent);
+    border: 0; padding: 12px 28px; cursor: pointer; transition: background .2s;
   }
-  button:hover { transform: translateY(-2px); background: var(--ink); }
+  button:hover { background: var(--ink); }
   button:disabled { opacity: .6; cursor: progress; transform: none; }
   .status { margin: 0; color: var(--ink-dim); }
   .status.ok { color: var(--accent); }
@@ -69,7 +67,7 @@ import Base from '../layouts/Base.astro';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    status.className = 'status mono';
+    status.className = 'status';
     if (!form.checkValidity()) {
       status.textContent = 'Name, a valid email and a message, please.';
       status.classList.add('err');
@@ -81,13 +79,13 @@ import Base from '../layouts/Base.astro';
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || 'Something went wrong.');
       form.reset();
-      status.textContent = "Sent. I'll get back to you soon.";
+      status.textContent = "Thanks, that's sent.";
       status.classList.add('ok');
     } catch (err) {
       status.textContent = (err as Error).message || 'Something went wrong.';
       status.classList.add('err');
     } finally {
-      button.disabled = false; label.textContent = 'Send it';
+      button.disabled = false; label.textContent = 'Send';
     }
   });
 </script>

@@ -8,13 +8,12 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
 ---
 <Base title="Thoughts" description="Writing by Alex Young.">
   <header class="wrap page-head">
-    <p class="eyebrow">03 — Thoughts</p>
-    <h1 class="display rise">Half-formed <em>ideas</em></h1>
-    <p>Notes on agents, software and whatever else won't leave me alone.</p>
+    <h1 class="display rise">Thoughts</h1>
+    <p>Occasional writing, mostly about agents and software.</p>
   </header>
   <div class="wrap list">
     {posts.length === 0 ? (
-      <p class="empty">Nothing here yet. The first one is on its way. <a href="/rss.xml">Subscribe via RSS</a> to catch it.</p>
+      <p class="empty">Nothing here yet. There's an <a href="/rss.xml">RSS feed</a> if you want to know when there is.</p>
     ) : (
       <ol>
         {posts.map((p) => (
@@ -41,6 +40,6 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
   .desc { grid-column: 2; color: var(--ink-dim); }
   li a:hover .title { color: var(--accent); }
   @media (max-width: 640px) { li a { grid-template-columns: 1fr; } .desc { grid-column: 1; } }
-  .empty { font-family: var(--serif); font-style: italic; font-size: clamp(26px, 3vw, 36px); color: var(--ink-dim); padding: 56px 0; margin: 0; max-width: 760px; line-height: 1.25; }
+  .empty { color: var(--ink-dim); padding: 48px 0; margin: 0; }
   .empty a { color: var(--accent); }
 </style>
