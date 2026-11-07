@@ -7,15 +7,50 @@
 <script>
   const canvas = document.getElementById('flow') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
+  const portrait = document.querySelector('.portrait') as HTMLImageElement | null;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let w = 0, h = 0, dpr = 1, t = 0, raf = 0, running = true;
   const mouse = { x: -9999, y: -9999 };
   type P = { x: number; y: number; life: number; hot: boolean };
   let ps: P[] = [];
 
+  // Obstacle field from the portrait's alpha: ~1 inside the silhouette, ~0.5 at the edge,
+  // fading to 0 a little way out. Sampled at 1/S of CSS pixels.
+  const S = 4;
+  let field: Float32Array | null = null, fw = 0, fh = 0;
+
+  function buildField() {
+    field = null;
+    if (!portrait || !portrait.complete || !portrait.naturalWidth) return;
+    const pr = portrait.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
+    // account for object-fit: contain (mobile) — content is centred horizontally, top-aligned
+    const scale = Math.min(pr.width / portrait.naturalWidth, pr.height / portrait.naturalHeight);
+    const iw = portrait.naturalWidth * scale, ih = portrait.naturalHeight * scale;
+    const ix = pr.left - cr.left + (pr.width - iw) / 2;
+    const iy = pr.top - cr.top + (getComputedStyle(portrait).objectFit === 'contain' ? 0 : (pr.height - ih) / 2);
+    fw = Math.ceil(w / S); fh = Math.ceil(h / S);
+    const off = document.createElement('canvas');
+    off.width = fw; off.height = fh;
+    const o = off.getContext('2d', { willReadFrequently: true })!;
+    o.filter = 'blur(10px)';
+    o.drawImage(portrait, ix / S, iy / S, iw / S, ih / S);
+    try {
+      const d = o.getImageData(0, 0, fw, fh).data;
+      field = new Float32Array(fw * fh);
+      for (let i = 0; i < field.length; i++) field[i] = d[i * 4 + 3] / 255;
+    } catch { field = null; }
+  }
+  function f(x: number, y: number) {
+    if (!field) return 0;
+    const fx = (x / S) | 0, fy = (y / S) | 0;
+    if (fx < 1 || fy < 1 || fx >= fw - 1 || fy >= fh - 1) return 0;
+    return field[fy * fw + fx];
+  }
+
   function spawn(p?: P): P {
     const q = p ?? ({} as P);
-    q.x = Math.random() * w; q.y = Math.random() * h;
+    let tries = 0;
+    do { q.x = Math.random() * w; q.y = Math.random() * h; } while (f(q.x, q.y) > 0.3 && ++tries < 8);
     q.life = 80 + Math.random() * 220; q.hot = Math.random() < 0.18;
     return q;
   }
@@ -26,10 +61,10 @@
     canvas.width = w * dpr; canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#0c0b09'; ctx.fillRect(0, 0, w, h);
+    buildField();
     const n = Math.round(Math.min(1400, (w * h) / 900));
     ps = Array.from({ length: n }, () => spawn());
   }
-  // cheap smooth pseudo-noise field
   function angle(x: number, y: number) {
     const s = 0.0024;
     return (
@@ -47,26 +82,54 @@
       let a = angle(p.x, p.y);
       const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
       if (d2 < 30000) a += Math.atan2(dy, dx) * (1 - d2 / 30000) * 1.5;
-      const nx = p.x + Math.cos(a) * 1.4, ny = p.y + Math.sin(a) * 1.4;
-      ctx.strokeStyle = p.hot ? 'rgba(255,90,31,0.55)' : 'rgba(237,230,216,0.16)';
-      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny); ctx.stroke();
-      p.x = nx; p.y = ny;
-      if (--p.life < 0 || nx < 0 || nx > w || ny < 0 || ny > h) spawn(p);
+      let vx = Math.cos(a), vy = Math.sin(a), speed = 1.4;
+
+      const v = f(p.x, p.y);
+      let rim = 0;
+      if (v > 0.02) {
+        // outward normal = -gradient; steer along the tangent that best matches the current flow
+        let nx = f(p.x - S, p.y) - f(p.x + S, p.y), ny = f(p.x, p.y - S) - f(p.x, p.y + S);
+        const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl;
+        let tx = -ny, ty = nx;
+        if (tx * vx + ty * vy < 0) { tx = -tx; ty = -ty; }
+        const k = Math.min(1, v * 2.2);
+        vx = vx * (1 - k) + (tx + nx * v * 1.2) * k;
+        vy = vy * (1 - k) + (ty + ny * v * 1.2) * k;
+        const vl = Math.hypot(vx, vy) || 1; vx /= vl; vy /= vl;
+        speed += k * 1.2; // water speeds up round a rock
+        rim = Math.max(0, 1 - Math.abs(v - 0.35) / 0.3); // brightest just outside the edge
+      }
+      const nx2 = p.x + vx * speed, ny2 = p.y + vy * speed;
+      if (rim > 0.05) {
+        ctx.strokeStyle = `rgba(255,${110 + (rim * 60) | 0},40,${0.25 + rim * 0.75})`;
+        ctx.lineWidth = 1 + rim * 0.8;
+      } else {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = p.hot ? 'rgba(255,90,31,0.55)' : 'rgba(237,230,216,0.16)';
+      }
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx2, ny2); ctx.stroke();
+      p.x = nx2; p.y = ny2;
+      if (--p.life < 0 || nx2 < 0 || nx2 > w || ny2 < 0 || ny2 > h || v > 0.85) spawn(p);
     }
     if (running) raf = requestAnimationFrame(frame);
   }
   function start() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
   function stop() { running = false; cancelAnimationFrame(raf); }
+  const prime = () => { for (let i = 0; i < 300; i++) frame(); };
 
   resize();
-  addEventListener('resize', () => { resize(); if (reduce) for (let i = 0; i < 300; i++) frame(); });
+  // the portrait may load / finish its entrance animation after us
+  portrait?.addEventListener('load', buildField);
+  portrait?.addEventListener('animationend', buildField);
+  addEventListener('resize', () => { resize(); if (reduce) prime(); });
   addEventListener('pointermove', (e) => {
     const r = canvas.getBoundingClientRect();
     mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
   });
   if (reduce) {
     running = false;
-    for (let i = 0; i < 300; i++) frame(); // a still, pre-drawn field
+    if (portrait && !portrait.complete) portrait.addEventListener('load', prime, { once: true });
+    else prime();
   } else {
     raf = requestAnimationFrame(frame);
     new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())).observe(canvas);
