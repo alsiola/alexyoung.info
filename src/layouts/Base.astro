@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+interface Props { title?: string; description?: string; }
+const { title, description = 'Alex Young builds software, agents and the odd quantum experiment.' } = Astro.props;
+const fullTitle = title ? `${title} — Alex Young` : 'Alex Young';
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/projects/', label: 'Projects', n: '01' },
+  { href: '/thoughts/', label: 'Thoughts', n: '02' },
+  { href: '/contact/', label: 'Contact', n: '03' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Alex Young — Thoughts" href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <meta name="theme-color" content="#0c0b09" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a href="/" class="mark" aria-label="Home"><em>Alex</em> Young</a>
+        <nav>
+          {nav.map((item) => (
+            <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+              <span class="n">{item.n}</span>{item.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <div class="wrap bar">
+        <span class="mono">© {new Date().getFullYear()} Alex Young</span>
+        <span class="mono">
+          <a href="https://github.com/alsiola">GitHub</a> · <a href="/rss.xml">RSS</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background: color-mix(in srgb, var(--bg) 72%, transparent); border-bottom: 1px solid var(--line); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+  .mark { font-family: var(--serif); font-size: 26px; text-decoration: none; line-height: 1; white-space: nowrap; }
+  .mark em { color: var(--accent); }
+  nav { display: flex; gap: clamp(14px, 3vw, 36px); }
+  nav a { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; color: var(--ink-dim); transition: color .2s; display: flex; gap: 6px; }
+  nav a:hover, nav a[aria-current] { color: var(--ink); }
+  nav a[aria-current] .n { color: var(--accent); }
+  .n { color: var(--line); color: #4a443a; }
+  @media (max-width: 520px) { .n { display: none; } .mark { font-size: 22px; } }
+  .site-footer { border-top: 1px solid var(--line); color: var(--ink-dim); }
+  .site-footer a { text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+</style>

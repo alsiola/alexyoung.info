@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('thoughts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+---
+<Base title="Thoughts" description="Writing by Alex Young.">
+  <header class="wrap page-head">
+    <p class="eyebrow">02 — Thoughts</p>
+    <h1 class="display rise">Half-formed <em>ideas</em></h1>
+    <p>Notes on agents, software and whatever else won't leave me alone.</p>
+  </header>
+  <div class="wrap list">
+    {posts.length === 0 ? (
+      <p class="empty">Nothing here yet. The first one is on its way. <a href="/rss.xml">Subscribe via RSS</a> to catch it.</p>
+    ) : (
+      <ol>
+        {posts.map((p) => (
+          <li>
+            <a href={`/thoughts/${p.id}/`}>
+              <time class="mono" datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+              <span class="title">{p.data.title}</span>
+              <span class="desc">{p.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )}
+  </div>
+</Base>
+
+<style>
+  .list { padding-bottom: 96px; }
+  ol { list-style: none; margin: 0; padding: 0; }
+  li { border-bottom: 1px solid var(--line); }
+  li a { display: grid; grid-template-columns: 140px 1fr; gap: 4px 32px; padding: 32px 0; text-decoration: none; }
+  time { color: var(--ink-dim); padding-top: 10px; }
+  .title { font-family: var(--serif); font-size: clamp(32px, 4vw, 52px); line-height: 1.05; transition: color .2s; }
+  .desc { grid-column: 2; color: var(--ink-dim); }
+  li a:hover .title { color: var(--accent); }
+  @media (max-width: 640px) { li a { grid-template-columns: 1fr; } .desc { grid-column: 1; } }
+  .empty { font-family: var(--serif); font-style: italic; font-size: clamp(26px, 3vw, 36px); color: var(--ink-dim); padding: 56px 0; margin: 0; max-width: 760px; line-height: 1.25; }
+  .empty a { color: var(--accent); }
+</style>

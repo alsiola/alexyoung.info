@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import { projects } from '../data/projects';
+---
+<Base title="Projects" description="Things Alex Young is building.">
+  <header class="wrap page-head">
+    <p class="eyebrow">01 — Projects</p>
+    <h1 class="display rise">The <em>work</em></h1>
+    <p>Open source, built in public, mostly worked by agents I've built to do it.</p>
+  </header>
+
+  <div class="wrap">
+    {projects.map((p, i) => (
+      <article id={p.slug} class="project">
+        <div class="meta">
+          <span class="mono big-idx">{String(i + 1).padStart(2, '0')}</span>
+          <span class="mono pill">{p.status}</span>
+        </div>
+        <div class="body">
+          <h2 class="display">{p.name}</h2>
+          <p class="tagline">{p.tagline}</p>
+          <p class="summary">{p.summary}</p>
+          <ul class="points">{p.points.map((pt) => <li>{pt}</li>)}</ul>
+          <div class="foot">
+            <ul class="stack">{p.stack.map((s) => <li class="mono">{s}</li>)}</ul>
+            <div class="links">
+              {p.links.map((l) => <a class="link-arrow" href={l.href}>{l.label} <span>↗</span></a>)}
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .project { display: grid; grid-template-columns: 200px 1fr; gap: 32px; padding: clamp(48px, 8vw, 96px) 0; border-bottom: 1px solid var(--line); scroll-margin-top: 80px; }
+  .meta { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .big-idx { font-size: 14px; color: var(--accent); }
+  .pill { border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px; color: var(--ink-dim); font-size: 11px; }
+  h2 { font-size: clamp(56px, 9vw, 128px); }
+  .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(24px, 3vw, 36px); color: var(--accent); margin: 12px 0 28px; line-height: 1.1; }
+  .summary { max-width: 680px; font-size: 19px; margin: 0 0 28px; }
+  .points { list-style: none; padding: 0; margin: 0 0 40px; max-width: 680px; }
+  .points li { padding: 12px 0 12px 28px; border-top: 1px solid var(--line); color: var(--ink-dim); position: relative; }
+  .points li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; align-items: center; }
+  .stack { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .stack li { background: var(--bg-2); border: 1px solid var(--line); padding: 6px 10px; font-size: 11px; color: var(--ink-dim); }
+  .links { display: flex; gap: 24px; }
+  @media (max-width: 760px) {
+    .project { grid-template-columns: 1fr; gap: 16px; }
+    .meta { flex-direction: row; align-items: center; }
+  }
+</style>

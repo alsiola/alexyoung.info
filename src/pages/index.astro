@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import FlowField from '../components/FlowField.astro';
+import { projects } from '../data/projects';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import alex from '../assets/alex.png';
+
+const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+<Base>
+  <section class="hero">
+    <FlowField />
+    <Image src={alex} alt="Alex Young" class="portrait" widths={[430, 860]} sizes="(max-width: 760px) 70vw, 45vw" loading="eager" fetchpriority="high" />
+    <div class="wrap hero-inner">
+      <p class="eyebrow rise">Software · Agents · Odd experiments</p>
+      <h1 class="display rise" style="animation-delay:.08s">Alex<br /><em>Young</em></h1>
+      <div class="hero-foot rise" style="animation-delay:.2s">
+        <p>I build systems that keep working after you stop watching them, from agent orchestration to quantum memory.</p>
+        <a class="link-arrow" href="/projects/">See the work <span>↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <div class="block-head">
+      <p class="eyebrow">01 — Selected work</p>
+      <a class="link-arrow" href="/projects/">All projects <span>↗</span></a>
+    </div>
+    <ol class="rows">
+      {projects.map((p, i) => (
+        <li>
+          <a href={`/projects/#${p.slug}`}>
+            <span class="mono idx">{String(i + 1).padStart(2, '0')}</span>
+            <span class="name">{p.name}</span>
+            <span class="tag">{p.tagline}</span>
+            <span class="mono status">{p.status}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap block">
+    <div class="block-head">
+      <p class="eyebrow">02 — Thoughts</p>
+      <a class="link-arrow" href="/thoughts/">All thoughts <span>↗</span></a>
+    </div>
+    {thoughts.length === 0 ? (
+      <p class="empty">Nothing here yet. First one's being written.</p>
+    ) : (
+      <ol class="rows">
+        {thoughts.map((t) => (
+          <li>
+            <a href={`/thoughts/${t.id}/`}>
+              <span class="mono idx">{t.data.date.toISOString().slice(0, 10)}</span>
+              <span class="name">{t.data.title}</span>
+              <span class="tag">{t.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <p class="eyebrow">03 — Contact</p>
+      <a href="/contact/" class="display cta-link">Say <em>hello</em> <span>→</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { position: relative; min-height: calc(100dvh - 64px); display: flex; align-items: flex-end; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, transparent 45%); pointer-events: none; }
+  .hero-inner { position: relative; z-index: 1; padding-bottom: clamp(32px, 6vw, 72px); }
+  .portrait { position: absolute; right: clamp(-40px, 2vw, 64px); bottom: 0; height: min(92%, 1000px); width: auto; z-index: 1; pointer-events: none; -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 22%); mask-image: linear-gradient(to top, transparent 0%, #000 22%); animation: rise 1.2s .15s cubic-bezier(.2,.7,.2,1) both; }
+  @media (max-width: 760px) { .portrait { top: 2%; bottom: auto; left: 0; right: 0; margin: 0 auto; height: auto; width: min(88%, 420px); max-height: 54%; object-fit: contain; object-position: top; -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 40%); mask-image: linear-gradient(to top, transparent 0%, #000 40%); } }
+  @media (prefers-reduced-motion: reduce) { .portrait { animation: none; } }
+  .hero-inner { z-index: 2 !important; }
+  .hero h1 { font-size: clamp(88px, min(21vw, 31dvh), 320px); margin: 16px 0 28px -0.04em; }
+  .hero-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+  .hero-foot p { max-width: 460px; margin: 0; font-size: clamp(17px, 1.6vw, 20px); color: var(--ink); }
+
+  .block { padding-top: clamp(64px, 10vw, 128px); }
+  .block-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .rows li { border-bottom: 1px solid var(--line); }
+  .rows a { display: grid; grid-template-columns: 56px minmax(0,1fr) minmax(0,1.2fr) auto; align-items: baseline; gap: 24px; padding: 28px 0; text-decoration: none; transition: padding .3s, color .3s; }
+  .rows a:hover { padding-left: 16px; }
+  .rows a:hover .name { color: var(--accent); }
+  .idx, .status { color: var(--ink-dim); }
+  .idx { min-width: 0; }
+  .name { font-family: var(--serif); font-size: clamp(36px, 5vw, 64px); line-height: 1; transition: color .3s; }
+  .tag { color: var(--ink-dim); }
+  @media (max-width: 760px) {
+    .rows a { grid-template-columns: 1fr auto; gap: 8px 16px; }
+    .rows .idx { grid-column: 1; }
+    .rows .status { grid-column: 2; grid-row: 1; }
+    .rows .name, .rows .tag { grid-column: 1 / -1; }
+  }
+  .empty { color: var(--ink-dim); font-family: var(--serif); font-style: italic; font-size: 28px; border-top: 1px solid var(--line); padding-top: 28px; margin: 0; }
+
+  .cta { margin-top: clamp(64px, 10vw, 128px); padding: clamp(64px, 10vw, 120px) 0; border-top: 1px solid var(--line); }
+  .cta-link { display: inline-block; font-size: clamp(72px, 16vw, 220px); text-decoration: none; margin-top: 24px; }
+  .cta-link span { display: inline-block; transition: transform .3s; color: var(--accent); }
+  .cta-link:hover span { transform: translateX(.15em); }
+</style>

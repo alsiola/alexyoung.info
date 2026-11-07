@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Contact" description="Get in touch with Alex Young.">
+  <section class="wrap grid">
+    <header>
+      <p class="eyebrow">03 — Contact</p>
+      <h1 class="display rise">Say<br /><em>hello</em></h1>
+      <p class="intro">Working on something with agents, want to talk about a project, or just want to argue about quantum memory? Drop a note.</p>
+      <p class="mono alt">Or find me on <a href="https://github.com/alsiola">GitHub ↗</a></p>
+    </header>
+
+    <form id="contact" action="/api/contact" method="post" novalidate>
+      <label>
+        <span class="mono">Name</span>
+        <input name="name" autocomplete="name" required maxlength="200" />
+      </label>
+      <label>
+        <span class="mono">Email</span>
+        <input name="email" type="email" autocomplete="email" required maxlength="320" />
+      </label>
+      <label>
+        <span class="mono">Message</span>
+        <textarea name="message" rows="5" required maxlength="10000"></textarea>
+      </label>
+      <label class="hp" aria-hidden="true">Company <input name="company" tabindex="-1" autocomplete="off" /></label>
+      <div class="actions">
+        <button type="submit"><span class="label">Send it</span> <span aria-hidden="true">→</span></button>
+        <p class="status mono" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+  </section>
+</Base>
+
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 8vw, 120px); padding: clamp(56px, 10vw, 128px) var(--gutter) 120px; align-items: start; }
+  h1 { font-size: clamp(88px, 13vw, 200px); margin: 24px 0 32px; }
+  .intro { font-size: 19px; max-width: 440px; margin: 0 0 24px; }
+  .alt { color: var(--ink-dim); }
+  .alt a { color: var(--accent); text-decoration: none; }
+  form { display: flex; flex-direction: column; gap: 28px; padding-top: 12px; }
+  label { display: flex; flex-direction: column; gap: 10px; }
+  label .mono { color: var(--ink-dim); }
+  input, textarea {
+    font: inherit; font-size: 20px; color: var(--ink); background: transparent;
+    border: 0; border-bottom: 1px solid var(--line); padding: 8px 0 12px; border-radius: 0;
+    transition: border-color .2s; resize: vertical;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  button {
+    font-family: var(--serif); font-size: 36px; line-height: 1; color: var(--bg); background: var(--accent);
+    border: 0; padding: 18px 32px 20px; cursor: pointer; display: inline-flex; gap: 14px; transition: transform .2s, background .2s;
+  }
+  button:hover { transform: translateY(-2px); background: var(--ink); }
+  button:disabled { opacity: .6; cursor: progress; transform: none; }
+  .status { margin: 0; color: var(--ink-dim); }
+  .status.ok { color: var(--accent); }
+  .status.err { color: #ff8b8b; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const form = document.getElementById('contact') as HTMLFormElement;
+  const status = form.querySelector('.status') as HTMLElement;
+  const button = form.querySelector('button') as HTMLButtonElement;
+  const label = button.querySelector('.label') as HTMLElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.className = 'status mono';
+    if (!form.checkValidity()) {
+      status.textContent = 'Name, a valid email and a message, please.';
+      status.classList.add('err');
+      return;
+    }
+    button.disabled = true; label.textContent = 'Sending';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'Something went wrong.');
+      form.reset();
+      status.textContent = "Sent. I'll get back to you soon.";
+      status.classList.add('ok');
+    } catch (err) {
+      status.textContent = (err as Error).message || 'Something went wrong.';
+      status.classList.add('err');
+    } finally {
+      button.disabled = false; label.textContent = 'Send it';
+    }
+  });
+</script>
