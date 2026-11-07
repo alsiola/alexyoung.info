@@ -29,6 +29,25 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'percy-main',
+    name: 'Percy Main',
+    tagline: 'A cricket club, run like a product.',
+    summary:
+      'The whole digital side of Percy Main Community Sports Club: public site, members area, payments and an offline match-day app for captains. Underneath sits a real AWS platform, plus Scout, an AI analyst that researches opposition from Play Cricket and ball-by-ball data and writes scouting reports.',
+    points: [
+      'Match-day PWA: team sheets, availability and payments, with background sync for when the pavilion signal drops',
+      'Scout: an agent with RAG fact memory that produces cited PDF scouting reports',
+      'AI content assistant that writes match reports straight into the editor',
+      '60+ ADRs, Terraform-managed AWS, 500+ commits since March 2026',
+    ],
+    stack: ['TypeScript', 'Fastify', 'React', 'PostgreSQL', 'AWS + Terraform', 'Stripe'],
+    status: 'Live',
+    links: [
+      { label: 'Site', href: 'https://www.percymain.org' },
+      { label: 'GitHub', href: 'https://github.com/percy-main/website-v2' },
+    ],
+  },
+  {
     slug: 'fuguestate',
     name: 'FugueState',
     tagline: 'Agent memory that dreams.',
