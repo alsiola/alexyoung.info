@@ -1,5 +1,5 @@
 ---
-title: I installed Home Assistant. But I become my home's assistant.
+title: I installed Home Assistant. But I became my home's assistant.
 description: I gave some agents access to my house and asked them to fund a humidity sensor. Now the house gives me chores.
 date: 2026-11-10
 draft: false
