@@ -1,9 +1,46 @@
 ---
 import '../styles/global.css';
-interface Props { title?: string; description?: string; }
-const { title, description = 'Alex Young builds software, agents and the odd quantum experiment.' } = Astro.props;
+import { getImage } from 'astro:assets';
+import alex from '../assets/alex.png';
+
+interface Article { published: Date; modified?: Date; }
+interface Props { title?: string; description?: string; article?: Article; }
+const { title, description = 'Alex Young builds software, agents and the odd quantum experiment.', article } = Astro.props;
 const fullTitle = title ? `${title} | Alex Young` : 'Alex Young';
 const path = Astro.url.pathname;
+const site = Astro.site!;
+const canonical = new URL(path, site).href;
+const ogImage = new URL((await getImage({ src: alex, width: 1200, format: 'jpg' })).src, site).href;
+
+const person = {
+  '@type': 'Person',
+  '@id': new URL('/#person', site).href,
+  name: 'Alex Young',
+  url: site.href,
+  image: ogImage,
+  jobTitle: 'Software engineer',
+  description: 'Software engineer, previously a vet, building tools that let coding agents take on longer, messier work.',
+  sameAs: ['https://github.com/alsiola'],
+};
+const graph: Record<string, unknown>[] = [
+  person,
+  { '@type': 'WebSite', '@id': new URL('/#website', site).href, url: site.href, name: 'Alex Young', author: { '@id': person['@id'] } },
+];
+if (article) {
+  graph.push({
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    url: canonical,
+    mainEntityOfPage: canonical,
+    datePublished: article.published.toISOString(),
+    dateModified: (article.modified ?? article.published).toISOString(),
+    author: { '@id': person['@id'] },
+    publisher: { '@id': person['@id'] },
+    image: ogImage,
+  });
+}
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 const nav = [
   { href: '/about/', label: 'About' },
   { href: '/projects/', label: 'Projects' },
@@ -18,11 +55,27 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Alex Young" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:site_name" content="Alex Young" />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_GB" />
+    {article && <meta property="article:published_time" content={article.published.toISOString()} />}
+    {article && <meta property="article:author" content="Alex Young" />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={jsonLd} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="Alex Young: Thoughts" href="/rss.xml" />
+    <link rel="alternate" type="text/plain" title="LLM summary" href="/llms.txt" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
